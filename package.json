@@ -1,6 +1,6 @@
 {
   "name": "turbo-harmony",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Seamless integration between Alpine.js and Hotwire Turbo",
   "keywords": [
     "alpinejs",
@@ -23,10 +23,17 @@
     "type": "git",
     "url": "git+https://github.com/kaochenlong/turbo-harmony.git"
   },
-  "main": "dist/turbo-harmony.cjs.js",
-  "module": "dist/turbo-harmony.esm.js",
+  "type": "module",
+  "main": "dist/turbo-harmony.js",
+  "module": "dist/turbo-harmony.js",
   "unpkg": "dist/turbo-harmony.min.js",
   "types": "dist/turbo-harmony.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/turbo-harmony.js",
+      "types": "./dist/turbo-harmony.d.ts"
+    }
+  },
   "files": [
     "dist",
     "src"
@@ -44,12 +51,13 @@
     "postversion": "git push && git push --tags"
   },
   "peerDependencies": {
-    "alpinejs": "^3.0.0",
-    "@hotwired/turbo": "^7.0.0 || ^8.0.0"
+    "@hotwired/turbo": "^7.0.0 || ^8.0.0",
+    "alpinejs": "^3.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@vitest/coverage-v8": "^1.2.2",
     "@vitest/ui": "^1.2.2",

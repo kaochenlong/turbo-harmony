@@ -1,72 +1,74 @@
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser'
+import { readFileSync } from 'fs'
+import { preprocessPlugin } from './scripts/preprocess.js'
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
 const banner = `/**
- * TurboHarmony v${require('./package.json').version}
+ * TurboHarmony v${pkg.version}
  * (c) ${new Date().getFullYear()} TurboHarmony Contributors
  * @license MIT
  */`
 
-export default [
-  // ESM build
+// Define build variants
+const builds = [
   {
-    input: 'src/index.js',
-    external: ['alpinejs', '@hotwired/turbo'],
-    output: {
-      file: 'dist/turbo-harmony.esm.js',
-      format: 'es',
-      banner,
-      sourcemap: true
-    },
-    plugins: [resolve(), commonjs()]
+    name: 'full',
+    file: 'turbo-harmony.js',
+    defines: { DEBUG: true, PRESERVE_STATE: true }
   },
-
-  // CommonJS build
   {
-    input: 'src/index.js',
-    external: ['alpinejs', '@hotwired/turbo'],
-    output: {
-      file: 'dist/turbo-harmony.cjs.js',
-      format: 'cjs',
-      banner,
-      sourcemap: true,
-      exports: 'named'
-    },
-    plugins: [resolve(), commonjs()]
+    name: 'standard',
+    file: 'turbo-harmony.standard.js',
+    defines: { DEBUG: false, PRESERVE_STATE: true }
   },
-
-  // UMD build (for CDN usage)
   {
-    input: 'src/index.js',
-    output: {
-      file: 'dist/turbo-harmony.js',
-      format: 'umd',
-      name: 'TurboHarmony',
-      banner,
-      sourcemap: true,
-      globals: {
-        'alpinejs': 'Alpine',
-        '@hotwired/turbo': 'Turbo'
-      }
-    },
-    plugins: [resolve(), commonjs()]
-  },
-
-  // Minified UMD build
-  {
-    input: 'src/index.js',
-    output: {
-      file: 'dist/turbo-harmony.min.js',
-      format: 'umd',
-      name: 'TurboHarmony',
-      banner,
-      sourcemap: true,
-      globals: {
-        'alpinejs': 'Alpine',
-        '@hotwired/turbo': 'Turbo'
-      }
-    },
-    plugins: [resolve(), commonjs(), terser()]
+    name: 'lite',
+    file: 'turbo-harmony.lite.js',
+    defines: { DEBUG: false, PRESERVE_STATE: false }
   }
 ]
+
+// Generate configs for each build variant
+const configs = []
+
+builds.forEach(build => {
+  // Unminified version
+  configs.push({
+    input: 'src/index.js',
+    external: ['alpinejs', '@hotwired/turbo'],
+    output: {
+      file: `dist/${build.file}`,
+      format: 'es',
+      banner: banner + (build.name !== 'full' ? `\n/* Build: ${build.name} */` : ''),
+      sourcemap: true
+    },
+    plugins: [
+      preprocessPlugin(build.defines),
+      resolve(),
+      commonjs()
+    ]
+  })
+
+  // Minified version
+  configs.push({
+    input: 'src/index.js',
+    external: ['alpinejs', '@hotwired/turbo'],
+    output: {
+      file: `dist/${build.file.replace('.js', '.min.js')}`,
+      format: 'es',
+      banner: banner + (build.name !== 'full' ? `\n/* Build: ${build.name} */` : ''),
+      sourcemap: true
+    },
+    plugins: [
+      preprocessPlugin(build.defines),
+      resolve(),
+      commonjs(),
+      terser()
+    ]
+  })
+})
+
+export default configs

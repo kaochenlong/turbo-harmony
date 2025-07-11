@@ -14,7 +14,9 @@ class TurboHarmony {
     this.options = {
       // Debug and logging
       debug: false,
+      // @if DEBUG
       logLevel: 'warn', // 'debug', 'info', 'warn', 'error'
+      // @endif
 
       // State management
       preserveState: false,
@@ -43,6 +45,7 @@ class TurboHarmony {
       ...options
     }
 
+    // @if DEBUG
     // Performance and debugging metrics
     this.metrics = {
       streamUpdates: 0,
@@ -53,12 +56,16 @@ class TurboHarmony {
       performance: [],
       startTime: performance.now()
     }
+    // @endif
 
     // Internal state
     this.isInitialized = false
     this.preservedStates = new WeakMap()
     this.initializedElements = new WeakSet()
+    
+    // @if DEBUG
     this.componentLifecycle = new Map()
+    // @endif
 
     // Bind methods to maintain context
     this.handleBeforeVisit = this.handleBeforeVisit.bind(this)
@@ -142,7 +149,9 @@ class TurboHarmony {
    * Handle Turbo Drive before visit (full page navigation)
    */
   handleBeforeVisit(event) {
+    // @if DEBUG
     this.metrics.driveNavigation++
+    // @endif
     this.log('debug', 'Turbo Drive: before visit', { location: event.detail.url })
 
     // Clean up Alpine instances before navigation
@@ -172,11 +181,13 @@ class TurboHarmony {
       target: event.detail?.target
     })
 
+    // @if PRESERVE_STATE
     // Prepare for Stream update
     const targetElement = this.findTargetElement(event)
     if (targetElement && this.options.preserveState) {
       this.preserveAlpineState(targetElement)
     }
+    // @endif
   }
 
   /**
@@ -184,8 +195,10 @@ class TurboHarmony {
    * This is the core functionality for Stream integration
    */
   handleStreamRender(event) {
+    // @if DEBUG
     const startTime = performance.now()
     this.metrics.streamUpdates++
+    // @endif
 
     try {
       const targetElement = this.findTargetElement(event)
@@ -211,9 +224,11 @@ class TurboHarmony {
       // Perform Alpine reinitialization
       this.reinitializeAlpineInElement(targetElement)
 
+      // @if DEBUG
       // Record performance
       const endTime = performance.now()
       this.metrics.performance.push(endTime - startTime)
+      // @endif
 
     } catch (error) {
       this.handleError(error, 'handleStreamRender')
@@ -226,6 +241,7 @@ class TurboHarmony {
   handleBeforeFrameRender(event) {
     this.log('debug', 'Turbo Frame: before render', { frame: event.target.id })
 
+    // @if DEBUG
     // Clean up tracking for elements that will be removed
     const frameElement = event.target
     if (frameElement) {
@@ -235,13 +251,16 @@ class TurboHarmony {
         this.trackComponentLifecycle(el, 'beforeDestroy')
       })
     }
+    // @endif
   }
 
   /**
    * Handle Turbo Frame render
    */
   handleFrameRender(event) {
+    // @if DEBUG
     this.metrics.frameUpdates++
+    // @endif
     const frameElement = event.target
 
     this.log('debug', 'Turbo Frame: render complete', { frame: frameElement.id })
@@ -284,7 +303,9 @@ class TurboHarmony {
    * This is the core method that makes the magic happen
    */
   reinitializeAlpineInElement(element) {
+    // @if DEBUG
     this.metrics.reinitializations++
+    // @endif
 
     try {
       this.log('debug', 'Reinitializing Alpine in element', {
@@ -298,10 +319,12 @@ class TurboHarmony {
         this.options.beforeReinit(element)
       }
 
+      // @if PRESERVE_STATE
       // Preserve state if enabled
       if (this.options.preserveState) {
         this.preserveAlpineState(element)
       }
+      // @endif
 
       // Track initialized elements to prevent double initialization
       const alpineElements = element.querySelectorAll('[x-data]')
@@ -314,11 +337,15 @@ class TurboHarmony {
             id: el.id,
             classes: el.className
           })
+          // @if DEBUG
           this.trackComponentLifecycle(el, 'skipped')
+          // @endif
           return
         }
         elementsToInit.push(el)
+        // @if DEBUG
         this.trackComponentLifecycle(el, 'queued')
+        // @endif
       })
 
       // Only destroy and reinit if there are uninitialized elements
@@ -340,13 +367,17 @@ class TurboHarmony {
           // Mark elements as initialized
           elementsToInit.forEach(el => {
             this.initializedElements.add(el)
+            // @if DEBUG
             this.trackComponentLifecycle(el, 'initialized')
+            // @endif
           })
 
+          // @if PRESERVE_STATE
           // Restore state if preserved
           if (this.options.preserveState) {
             this.restoreAlpineState(element)
           }
+          // @endif
 
           // Execute afterReinit hook
           if (this.options.afterReinit) {
@@ -373,6 +404,7 @@ class TurboHarmony {
     }
   }
 
+  // @if PRESERVE_STATE
   /**
    * Preserve Alpine component state before reinitialization
    */
@@ -458,11 +490,50 @@ class TurboHarmony {
   }
 
   /**
+   * Safe JSON stringify that handles circular references and non-serializable values
+   */
+  safeStringify(obj) {
+    const seen = new WeakSet()
+
+    return JSON.stringify(obj, (key, value) => {
+      // Skip DOM elements and other non-serializable browser objects
+      if (value instanceof HTMLElement ||
+          value instanceof Window ||
+          value instanceof Document ||
+          value instanceof Event) {
+        return undefined
+      }
+
+      // Skip functions
+      if (typeof value === 'function') {
+        return undefined
+      }
+
+      // Skip properties that start with _ (often internal/private)
+      if (typeof key === 'string' && key.startsWith('_')) {
+        return undefined
+      }
+
+      // Handle circular references
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) {
+          return undefined
+        }
+        seen.add(value)
+      }
+
+      return value
+    })
+  }
+  // @endif
+
+  /**
    * Enhanced logging system with levels and formatting
    */
   log(level, message, data = null) {
     if (!this.options.debug) return
 
+    // @if DEBUG
     const levels = { debug: 0, info: 1, warn: 2, error: 3 }
     const currentLevel = levels[this.options.logLevel] || 1
 
@@ -479,19 +550,28 @@ class TurboHarmony {
         console[method](prefix, message)
       }
     }
+    // @else
+    if (level === 'error' || level === 'warn') {
+      console[level]('[TurboHarmony]', message, data || '')
+    }
+    // @endif
   }
 
   /**
    * Centralized error handling
    */
   handleError(error, context = '') {
+    // @if DEBUG
     this.metrics.errors++
+    // @endif
 
     const errorInfo = {
       message: error.message || error,
       context,
       timestamp: new Date().toISOString(),
+      // @if DEBUG
       metrics: this.getMetrics()
+      // @endif
     }
 
     this.log('error', `TurboHarmony error in ${context}:`, errorInfo)
@@ -506,6 +586,7 @@ class TurboHarmony {
     }
   }
 
+  // @if DEBUG
   /**
    * Track component lifecycle events
    */
@@ -580,6 +661,7 @@ class TurboHarmony {
 
     this.log('info', 'Metrics reset')
   }
+  // @endif
 
   /**
    * Manually reinitialize Alpine for the entire document
@@ -588,43 +670,6 @@ class TurboHarmony {
   reinitializeAll() {
     this.log('info', 'Manual reinitialization triggered')
     this.reinitializeAlpineInElement(document.body)
-  }
-
-  /**
-   * Safe JSON stringify that handles circular references and non-serializable values
-   */
-  safeStringify(obj) {
-    const seen = new WeakSet()
-
-    return JSON.stringify(obj, (key, value) => {
-      // Skip DOM elements and other non-serializable browser objects
-      if (value instanceof HTMLElement ||
-          value instanceof Window ||
-          value instanceof Document ||
-          value instanceof Event) {
-        return undefined
-      }
-
-      // Skip functions
-      if (typeof value === 'function') {
-        return undefined
-      }
-
-      // Skip properties that start with _ (often internal/private)
-      if (typeof key === 'string' && key.startsWith('_')) {
-        return undefined
-      }
-
-      // Handle circular references
-      if (typeof value === 'object' && value !== null) {
-        if (seen.has(value)) {
-          return undefined
-        }
-        seen.add(value)
-      }
-
-      return value
-    })
   }
 
   /**
