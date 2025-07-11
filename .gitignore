@@ -2,7 +2,7 @@
 node_modules/
 
 # Build output
-dist/
+# dist/ - Keep dist for npm package
 
 # Test coverage
 coverage/

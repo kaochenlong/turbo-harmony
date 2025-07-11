@@ -32,7 +32,14 @@
     ".": {
       "import": "./dist/turbo-harmony.js",
       "types": "./dist/turbo-harmony.d.ts"
-    }
+    },
+    "./src": "./src/index.js",
+    "./src/index.js": "./src/index.js",
+    "./dist/turbo-harmony.js": "./dist/turbo-harmony.js",
+    "./dist/turbo-harmony.standard.js": "./dist/turbo-harmony.standard.js", 
+    "./dist/turbo-harmony.lite.js": "./dist/turbo-harmony.lite.js",
+    "./standard": "./dist/turbo-harmony.standard.js",
+    "./lite": "./dist/turbo-harmony.lite.js"
   },
   "files": [
     "dist",

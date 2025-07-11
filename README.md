@@ -1,35 +1,139 @@
-# TurboHarmony 🎭
+# TurboHarmony
 
-> Seamless integration between Alpine.js and Hotwire Turbo
+> Alpine.js 與 Hotwire Turbo 的簡單整合工具
 
-![npm version](https://img.shields.io/npm/v/turbo-harmony)
-![license](https://img.shields.io/npm/l/turbo-harmony)
-![bundle size](https://img.shields.io/bundlephobia/minzip/turbo-harmony)
+一個幫助 Alpine.js 和 Turbo 更好協作的小工具。
 
-TurboHarmony solves the integration challenges between Alpine.js and Turbo, ensuring your Alpine components work flawlessly with Turbo Drive navigation, Turbo Frames, and especially Turbo Streams.
+## 遇到的問題
 
-## 🎯 The Problem
+在使用 Alpine.js 搭配 Turbo 時，可能會遇到：
+
+- Turbo Stream 更新後，Alpine 組件沒有重新初始化
+- 頁面導航時 Alpine 狀態丟失
+- 組件重複初始化或記憶體洩漏
+
+## 解決方法
+
+TurboHarmony 提供簡單的解決方案：
+
+- 自動重新初始化 Alpine 組件
+- 基本的錯誤處理
+- 可選的狀態保存功能
+- 簡單的除錯工具
+
+## 安裝方式
+
+### NPM/Yarn
+
+```bash
+npm install turbo-harmony
+# 或
+yarn add turbo-harmony
+```
+
+### GitHub（推薦用於測試）
+
+```bash
+npm install github:kaochenlong/turbo-harmony
+```
+
+## 使用方式
+
+### 基本使用
+
+```javascript
+import Alpine from 'alpinejs'
+import TurboHarmony from 'turbo-harmony'
+
+// 初始化 TurboHarmony
+const harmony = new TurboHarmony()
+
+// 啟動 Alpine
+Alpine.start()
+```
+
+### 不同版本選擇
+
+```javascript
+// 完整版（包含所有功能）
+import TurboHarmony from 'turbo-harmony'
+
+// 標準版（移除除錯功能）
+import TurboHarmony from 'turbo-harmony/standard'
+
+// 精簡版（只有核心功能）
+import TurboHarmony from 'turbo-harmony/lite'
+```
+
+### 基本設定
+
+```javascript
+const harmony = new TurboHarmony({
+  // 開發時啟用除錯
+  debug: true,
+  
+  // 是否保存狀態
+  preserveState: false,
+  
+  // 要跳過的元素
+  skipSelectors: ['.no-alpine', '.turbo-harmony-skip']
+})
+```
+
+## 設定選項
+
+| 選項 | 型別 | 預設值 | 說明 |
+|------|------|--------|------|
+| `debug` | boolean | `false` | 啟用除錯模式 |
+| `preserveState` | boolean | `false` | 保存組件狀態 |
+| `skipSelectors` | array | `['.turbo-harmony-skip']` | 跳過的選擇器 |
+| `beforeReinit` | function | `null` | 重新初始化前的回調 |
+| `afterReinit` | function | `null` | 重新初始化後的回調 |
+| `onError` | function | `null` | 錯誤處理回調 |
+
+## 跳過特定元素
+
+```html
+<!-- 這個組件不會被重新初始化 -->
+<div x-data="myComponent()" class="turbo-harmony-skip">
+  ...
+</div>
+```
+
+## 目前狀態
+
+這是一個實驗性質的工具，主要用於解決我們專案中遇到的問題。如果對您有幫助，歡迎使用和回饋。
+
+## 授權
+
+MIT
+
+---
+
+# TurboHarmony
+
+> Simple integration tool for Alpine.js and Hotwire Turbo
+
+A small utility to help Alpine.js and Turbo work better together.
+
+## Problems We Encountered
 
 When using Alpine.js with Turbo, you might encounter:
 
-- Alpine components not initializing after Turbo Stream updates
-- State loss during page navigation
-- Memory leaks from uncleared event listeners
-- Double initialization of components
-- Broken Alpine functionality after partial page updates
+- Alpine components not reinitializing after Turbo Stream updates
+- Alpine state loss during page navigation
+- Component double initialization or memory leaks
 
-## ✨ The Solution
+## Our Solution
 
-TurboHarmony provides a drop-in adapter that:
+TurboHarmony provides a simple solution:
 
-- ✅ Automatically reinitializes Alpine components after Turbo updates
-- ✅ Preserves component state during navigation (optional)
-- ✅ Prevents memory leaks and double initialization
-- ✅ Works with all Turbo features (Drive, Frames, Streams)
-- ✅ Provides debugging tools and performance metrics
-- ✅ Zero configuration required (but fully customizable)
+- Automatically reinitialize Alpine components
+- Basic error handling
+- Optional state preservation
+- Simple debugging tools
 
-## 📦 Installation
+## Installation
 
 ### NPM/Yarn
 
@@ -39,20 +143,18 @@ npm install turbo-harmony
 yarn add turbo-harmony
 ```
 
-### CDN
+### GitHub (Recommended for testing)
 
-```html
-<!-- After Alpine and Turbo -->
-<script src="https://unpkg.com/turbo-harmony@latest/dist/turbo-harmony.min.js"></script>
+```bash
+npm install github:kaochenlong/turbo-harmony
 ```
 
-## 🚀 Quick Start
+## Usage
 
-### Basic Setup
+### Basic Usage
 
 ```javascript
 import Alpine from 'alpinejs'
-import * as Turbo from '@hotwired/turbo'
 import TurboHarmony from 'turbo-harmony'
 
 // Initialize TurboHarmony
@@ -62,229 +164,58 @@ const harmony = new TurboHarmony()
 Alpine.start()
 ```
 
-### With Configuration
+### Different Build Variants
+
+```javascript
+// Full version (all features)
+import TurboHarmony from 'turbo-harmony'
+
+// Standard version (no debug features)
+import TurboHarmony from 'turbo-harmony/standard'
+
+// Lite version (core features only)
+import TurboHarmony from 'turbo-harmony/lite'
+```
+
+### Basic Configuration
 
 ```javascript
 const harmony = new TurboHarmony({
-  // Enable debug mode for development
+  // Enable debug in development
   debug: true,
   
-  // Preserve Alpine component state during navigation
-  preserveState: true,
+  // Whether to preserve state
+  preserveState: false,
   
-  // Add custom lifecycle hooks
-  beforeReinit: (element) => {
-    console.log('About to reinitialize:', element)
-  },
-  afterReinit: (element) => {
-    console.log('Reinitialized:', element)
-  }
+  // Elements to skip
+  skipSelectors: ['.no-alpine', '.turbo-harmony-skip']
 })
 ```
 
-## 🔧 Configuration Options
+## Configuration Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `debug` | boolean | `false` | Enable debug logging |
-| `logLevel` | string | `'warn'` | Log level: 'debug', 'info', 'warn', 'error' |
-| `preserveState` | boolean | `false` | Preserve Alpine component state |
-| `preserveStateSelectors` | array | `['[x-data]']` | Selectors for state preservation |
-| `skipSelectors` | array | `['.turbo-harmony-skip', '.no-alpine', '[data-turbo-harmony-skip]']` | Elements to skip |
-| `reinitDelay` | number | `0` | Delay (ms) before reinitializing |
-| `batchUpdates` | boolean | `true` | Batch multiple updates for performance |
-| `beforeReinit` | function | `null` | Hook called before reinitialization |
-| `afterReinit` | function | `null` | Hook called after reinitialization |
-| `onError` | function | `null` | Custom error handler |
-| `autoStart` | boolean | `true` | Automatically initialize on creation |
+| `debug` | boolean | `false` | Enable debug mode |
+| `preserveState` | boolean | `false` | Preserve component state |
+| `skipSelectors` | array | `['.turbo-harmony-skip']` | Skip selectors |
+| `beforeReinit` | function | `null` | Before reinit callback |
+| `afterReinit` | function | `null` | After reinit callback |
+| `onError` | function | `null` | Error handler callback |
 
-## 📖 Advanced Usage
-
-### State Preservation
-
-Preserve form inputs and component state during navigation:
-
-```javascript
-const harmony = new TurboHarmony({
-  preserveState: true,
-  preserveStateSelectors: [
-    '[x-data]',
-    '[data-preserve-state]',
-    'form[data-turbo-permanent]'
-  ]
-})
-```
-
-### Custom Skip Logic
-
-Skip certain elements from reinitialization:
+## Skip Specific Elements
 
 ```html
 <!-- This component won't be reinitialized -->
 <div x-data="myComponent()" class="turbo-harmony-skip">
   ...
 </div>
-
-<!-- Using data attribute -->
-<div x-data="myComponent()" data-turbo-harmony-skip>
-  ...
-</div>
 ```
 
-### Error Handling
+## Current Status
 
-```javascript
-const harmony = new TurboHarmony({
-  onError: (error, context) => {
-    console.error('TurboHarmony error:', error)
-    // Send to error tracking service
-    Sentry.captureException(error, { extra: context })
-  }
-})
-```
+This is an experimental tool primarily built to solve problems in our own projects. If it helps you, feel free to use it and provide feedback.
 
-### Performance Monitoring
+## License
 
-```javascript
-// Get performance metrics
-const metrics = harmony.getMetrics()
-console.log('Metrics:', metrics)
-
-// Output:
-// {
-//   streamUpdates: 42,
-//   frameUpdates: 15,
-//   driveNavigation: 8,
-//   reinitializations: 65,
-//   errors: 0,
-//   averageReinitTime: 2.34,
-//   successRate: 100
-// }
-```
-
-## 🐛 Debugging
-
-### Enable Debug Mode
-
-```javascript
-const harmony = new TurboHarmony({ 
-  debug: true,
-  logLevel: 'debug' 
-})
-```
-
-### Interactive Debugger
-
-In development, press `Ctrl+Shift+H` to toggle the debug panel:
-
-```javascript
-import { TurboHarmonyDebugger } from 'turbo-harmony/debugger'
-
-const debugger = new TurboHarmonyDebugger(harmony)
-debugger.activate()
-```
-
-### Manual Controls
-
-```javascript
-// Manually reinitialize all Alpine components
-harmony.reinitializeAll()
-
-// Reset metrics
-harmony.resetMetrics()
-
-// Get lifecycle report
-const report = harmony.getLifecycleReport()
-```
-
-## 🎯 Common Patterns
-
-### Turbo Streams with Alpine
-
-```erb
-<!-- Rails Turbo Stream example -->
-<turbo-stream action="append" target="messages">
-  <template>
-    <div x-data="message('Hello!')" x-init="$el.scrollIntoView()">
-      <span x-text="text"></span>
-    </div>
-  </template>
-</turbo-stream>
-```
-
-### Dynamic Components
-
-```javascript
-// Alpine component that works with Turbo Streams
-Alpine.data('dynamicList', () => ({
-  items: [],
-  
-  addItem(item) {
-    this.items.push(item)
-    // TurboHarmony ensures this works after stream updates
-  }
-}))
-```
-
-### Form Handling
-
-```html
-<form x-data="form()" 
-      data-turbo-permanent
-      @turbo:submit-end="handleResponse($event)">
-  <!-- TurboHarmony preserves form state -->
-</form>
-```
-
-## 🧪 Testing
-
-```javascript
-import { test, expect } from 'vitest'
-import TurboHarmony from 'turbo-harmony'
-
-test('reinitializes Alpine after Turbo Stream', async () => {
-  const harmony = new TurboHarmony()
-  
-  // Simulate Turbo Stream update
-  const event = new CustomEvent('turbo:stream-render', {
-    detail: { target: document.body }
-  })
-  
-  document.dispatchEvent(event)
-  
-  const metrics = harmony.getMetrics()
-  expect(metrics.streamUpdates).toBe(1)
-})
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-```bash
-# Clone the repository
-git clone https://github.com/turbo-harmony/turbo-harmony.git
-
-# Install dependencies
-npm install
-
-# Run tests
-npm test
-
-# Build
-npm run build
-```
-
-## 📝 License
-
-MIT © TurboHarmony Contributors
-
-## 🙏 Acknowledgments
-
-- Alpine.js team for the reactive framework
-- Hotwire team for Turbo
-- All contributors and users of TurboHarmony
-
----
-
-Made with ❤️ for the Alpine.js + Turbo community
+MIT
