@@ -1,0 +1,28 @@
+# Source files
+src/
+examples/
+docs/
+tests/
+
+# Config files
+.eslintrc.js
+.prettierrc
+rollup.config.js
+vitest.config.js
+tsconfig.json
+
+# Development files
+*.log
+.DS_Store
+coverage/
+.nyc_output/
+
+# Editor files
+.vscode/
+.idea/
+
+# Keep only dist folder and essential files
+!dist/
+!README.md
+!LICENSE
+!package.json

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurboHarmony Basic Example</title>
+  
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+  <!-- Turbo -->
+  <script type="module">
+    import * as Turbo from 'https://unpkg.com/@hotwired/turbo@latest/dist/turbo.es2017-esm.js'
+  </script>
+  
+  <!-- TurboHarmony -->
+  <script src="../dist/turbo-harmony.js"></script>
+  
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .component {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .message {
+      background: #f3f4f6;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>TurboHarmony Basic Example</h1>
+  
+  <div class="component" x-data="counter()">
+    <h2>Counter Component</h2>
+    <p>Count: <span x-text="count"></span></p>
+    <button @click="increment">Increment</button>
+    <button @click="simulateStreamUpdate">Simulate Stream Update</button>
+  </div>
+
+  <div id="messages">
+    <h2>Messages</h2>
+    <div class="message">Initial message</div>
+  </div>
+
+  <script>
+    // Initialize TurboHarmony with debug mode
+    const harmony = new TurboHarmony({
+      debug: true,
+      preserveState: true,
+      beforeReinit: (element) => {
+        console.log('Before reinit:', element)
+      },
+      afterReinit: (element) => {
+        console.log('After reinit:', element)
+      }
+    })
+
+    // Alpine component
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('counter', () => ({
+        count: 0,
+        
+        increment() {
+          this.count++
+        },
+        
+        simulateStreamUpdate() {
+          // Simulate a Turbo Stream update
+          const messagesContainer = document.getElementById('messages')
+          
+          // Create a new message element
+          const newMessage = document.createElement('div')
+          newMessage.className = 'message'
+          newMessage.setAttribute('x-data', `{ time: '${new Date().toLocaleTimeString()}' }`)
+          newMessage.innerHTML = `
+            <span x-text="'Stream update at: ' + time"></span>
+            <button @click="$el.remove()">Remove</button>
+          `
+          
+          // Append the new element
+          messagesContainer.appendChild(newMessage)
+          
+          // Trigger Turbo Stream event
+          const event = new CustomEvent('turbo:stream-render', {
+            detail: { 
+              action: 'append',
+              target: messagesContainer 
+            }
+          })
+          document.dispatchEvent(event)
+        }
+      }))
+    })
+  </script>
+</body>
+</html>

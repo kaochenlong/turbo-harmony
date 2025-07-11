@@ -1,0 +1,66 @@
+{
+  "name": "turbo-harmony",
+  "version": "0.0.1",
+  "description": "Seamless integration between Alpine.js and Hotwire Turbo",
+  "keywords": [
+    "alpinejs",
+    "turbo",
+    "hotwire",
+    "turbo-drive",
+    "turbo-stream",
+    "turbo-frame",
+    "spa",
+    "integration",
+    "adapter"
+  ],
+  "author": "Eddie Kao",
+  "license": "MIT",
+  "homepage": "https://github.com/kaochenlong/turbo-harmony#readme",
+  "bugs": {
+    "url": "https://github.com/kaochenlong/turbo-harmony/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaochenlong/turbo-harmony.git"
+  },
+  "main": "dist/turbo-harmony.cjs.js",
+  "module": "dist/turbo-harmony.esm.js",
+  "unpkg": "dist/turbo-harmony.min.js",
+  "types": "dist/turbo-harmony.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src",
+    "format": "prettier --write 'src/**/*.js'",
+    "prepublishOnly": "npm run build && npm test",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "peerDependencies": {
+    "alpinejs": "^3.0.0",
+    "@hotwired/turbo": "^7.0.0 || ^8.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@vitest/coverage-v8": "^1.2.2",
+    "@vitest/ui": "^1.2.2",
+    "eslint": "^8.56.0",
+    "jsdom": "^24.0.0",
+    "prettier": "^3.2.4",
+    "rollup": "^4.9.6",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
