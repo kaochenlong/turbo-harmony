@@ -1,5 +1,5 @@
 /**
- * TurboHarmony v0.0.2
+ * TurboHarmony v0.1.1
  * (c) 2025 TurboHarmony Contributors
  * @license MIT
  */
@@ -26,20 +26,16 @@ class TurboHarmony {
       preserveStateSelectors: ['[x-data]'],
 
       // Element filtering
-      skipSelectors: [
-        '.turbo-harmony-skip',
-        '.no-alpine',
-        '[data-turbo-harmony-skip]'
-      ],
+      skipSelectors: ['.turbo-harmony-skip', '.no-alpine', '[data-turbo-harmony-skip]'],
 
       // Performance options
       reinitDelay: 0, // ms delay before reinitializing
       batchUpdates: true,
 
       // Lifecycle hooks
-      beforeReinit: null,      // (element) => {}
-      afterReinit: null,       // (element) => {}
-      onError: null,           // (error, context) => {}
+      beforeReinit: null, // (element) => {}
+      afterReinit: null, // (element) => {}
+      onError: null, // (error, context) => {}
 
       // Advanced options
       watchAttributes: ['x-data', 'x-show', 'x-if', 'x-for'],
@@ -53,7 +49,7 @@ class TurboHarmony {
     this.isInitialized = false;
     this.preservedStates = new WeakMap();
     this.initializedElements = new WeakSet();
-    
+
 
     // Bind methods to maintain context
     this.handleBeforeVisit = this.handleBeforeVisit.bind(this);
@@ -100,11 +96,15 @@ class TurboHarmony {
     }
 
     if (!window.Alpine) {
-      throw new Error('TurboHarmony: Alpine.js not found. Please ensure Alpine.js is loaded before TurboHarmony.')
+      throw new Error(
+        'TurboHarmony: Alpine.js not found. Please ensure Alpine.js is loaded before TurboHarmony.'
+      )
     }
 
     if (!window.Turbo) {
-      throw new Error('TurboHarmony: Turbo not found. Please ensure @hotwired/turbo is loaded before TurboHarmony.')
+      throw new Error(
+        'TurboHarmony: Turbo not found. Please ensure @hotwired/turbo is loaded before TurboHarmony.'
+      )
     }
 
     this.log('debug', 'Dependencies validated successfully');
@@ -198,7 +198,6 @@ class TurboHarmony {
       // Perform Alpine reinitialization
       this.reinitializeAlpineInElement(targetElement);
 
-
     } catch (error) {
       this.handleError(error, 'handleStreamRender');
     }
@@ -231,10 +230,12 @@ class TurboHarmony {
    */
   findTargetElement(event) {
     // Try multiple ways to find the target element
-    return event.target ||
-           event.detail?.target ||
-           (event.detail?.selector && document.querySelector(event.detail.selector)) ||
-           null
+    return (
+      event.target ||
+      event.detail?.target ||
+      (event.detail?.selector && document.querySelector(event.detail.selector)) ||
+      null
+    )
   }
 
   /**
@@ -385,7 +386,6 @@ class TurboHarmony {
           }
         }
       }
-
     } catch (error) {
       this.handleError(error, 'reinitializeAlpineInElement');
     }

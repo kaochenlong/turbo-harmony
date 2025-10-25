@@ -1,6 +1,6 @@
 {
   "name": "turbo-harmony",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Seamless integration between Alpine.js and Hotwire Turbo",
   "keywords": [
     "alpinejs",
@@ -48,7 +48,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "lint": "eslint src",

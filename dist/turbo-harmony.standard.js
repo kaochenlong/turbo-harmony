@@ -1,5 +1,5 @@
 /**
- * TurboHarmony v0.0.2
+ * TurboHarmony v0.1.1
  * (c) 2025 TurboHarmony Contributors
  * @license MIT
  */
@@ -26,20 +26,16 @@ class TurboHarmony {
       preserveStateSelectors: ['[x-data]'],
 
       // Element filtering
-      skipSelectors: [
-        '.turbo-harmony-skip',
-        '.no-alpine',
-        '[data-turbo-harmony-skip]'
-      ],
+      skipSelectors: ['.turbo-harmony-skip', '.no-alpine', '[data-turbo-harmony-skip]'],
 
       // Performance options
       reinitDelay: 0, // ms delay before reinitializing
       batchUpdates: true,
 
       // Lifecycle hooks
-      beforeReinit: null,      // (element) => {}
-      afterReinit: null,       // (element) => {}
-      onError: null,           // (error, context) => {}
+      beforeReinit: null, // (element) => {}
+      afterReinit: null, // (element) => {}
+      onError: null, // (error, context) => {}
 
       // Advanced options
       watchAttributes: ['x-data', 'x-show', 'x-if', 'x-for'],
@@ -53,7 +49,7 @@ class TurboHarmony {
     this.isInitialized = false;
     this.preservedStates = new WeakMap();
     this.initializedElements = new WeakSet();
-    
+
 
     // Bind methods to maintain context
     this.handleBeforeVisit = this.handleBeforeVisit.bind(this);
@@ -100,11 +96,15 @@ class TurboHarmony {
     }
 
     if (!window.Alpine) {
-      throw new Error('TurboHarmony: Alpine.js not found. Please ensure Alpine.js is loaded before TurboHarmony.')
+      throw new Error(
+        'TurboHarmony: Alpine.js not found. Please ensure Alpine.js is loaded before TurboHarmony.'
+      )
     }
 
     if (!window.Turbo) {
-      throw new Error('TurboHarmony: Turbo not found. Please ensure @hotwired/turbo is loaded before TurboHarmony.')
+      throw new Error(
+        'TurboHarmony: Turbo not found. Please ensure @hotwired/turbo is loaded before TurboHarmony.'
+      )
     }
 
     this.log('debug', 'Dependencies validated successfully');
@@ -203,7 +203,6 @@ class TurboHarmony {
       // Perform Alpine reinitialization
       this.reinitializeAlpineInElement(targetElement);
 
-
     } catch (error) {
       this.handleError(error, 'handleStreamRender');
     }
@@ -236,10 +235,12 @@ class TurboHarmony {
    */
   findTargetElement(event) {
     // Try multiple ways to find the target element
-    return event.target ||
-           event.detail?.target ||
-           (event.detail?.selector && document.querySelector(event.detail.selector)) ||
-           null
+    return (
+      event.target ||
+      event.detail?.target ||
+      (event.detail?.selector && document.querySelector(event.detail.selector)) ||
+      null
+    )
   }
 
   /**
@@ -398,7 +399,6 @@ class TurboHarmony {
           }
         }
       }
-
     } catch (error) {
       this.handleError(error, 'reinitializeAlpineInElement');
     }
@@ -426,7 +426,6 @@ class TurboHarmony {
 
       this.preservedStates.set(element, states);
       this.log('debug', `Preserved state for ${states.size} Alpine components`);
-
     } catch (error) {
       this.handleError(error, 'preserveAlpineState');
     }
@@ -442,7 +441,9 @@ class TurboHarmony {
 
       // Wait a tick for Alpine to fully initialize
       setTimeout(() => {
-        const alpineElements = element.querySelectorAll(this.options.preserveStateSelectors.join(','));
+        const alpineElements = element.querySelectorAll(
+          this.options.preserveStateSelectors.join(',')
+        );
 
         alpineElements.forEach(el => {
           const key = this.getElementKey(el);
@@ -455,7 +456,7 @@ class TurboHarmony {
               Object.keys(savedState).forEach(prop => {
                 const descriptor = Object.getOwnPropertyDescriptor(currentData, prop);
                 // Skip getters/setters and non-writable properties
-                if (!descriptor || (descriptor.set || descriptor.writable !== false)) {
+                if (!descriptor || descriptor.set || descriptor.writable !== false) {
                   try {
                     currentData[prop] = savedState[prop];
                   } catch (e) {
@@ -473,7 +474,6 @@ class TurboHarmony {
         // Clean up
         this.preservedStates.delete(element);
       }, 10);
-
     } catch (error) {
       this.handleError(error, 'restoreAlpineState');
     }
@@ -483,9 +483,11 @@ class TurboHarmony {
    * Generate a unique key for an element (for state preservation)
    */
   getElementKey(element) {
-    return element.id ||
-           element.getAttribute('data-key') ||
-           `${element.tagName}-${Array.from(element.parentNode.children).indexOf(element)}`
+    return (
+      element.id ||
+      element.getAttribute('data-key') ||
+      `${element.tagName}-${Array.from(element.parentNode.children).indexOf(element)}`
+    )
   }
 
   /**
@@ -496,10 +498,12 @@ class TurboHarmony {
 
     return JSON.stringify(obj, (key, value) => {
       // Skip DOM elements and other non-serializable browser objects
-      if (value instanceof HTMLElement ||
-          value instanceof Window ||
-          value instanceof Document ||
-          value instanceof Event) {
+      if (
+        value instanceof HTMLElement ||
+        value instanceof Window ||
+        value instanceof Document ||
+        value instanceof Event
+      ) {
         return undefined
       }
 

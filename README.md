@@ -1,8 +1,6 @@
 # TurboHarmony
 
-> Alpine.js 與 Hotwire Turbo 的簡單整合工具
-
-一個幫助 Alpine.js 和 Turbo 更好協作的小工具。
+Alpine.js 與 Hotwire Turbo 的簡單整合工具
 
 ## 遇到的問題
 
@@ -23,10 +21,16 @@ TurboHarmony 提供簡單的解決方案：
 
 ## 安裝方式
 
-### NPM/Yarn
+### NPM
 
 ```bash
-npm install github:kaochenlong/turbo-harmony
+npm install turbo-harmony
+```
+
+### Yarn
+
+```bash
+yarn add turbo-harmony
 ```
 
 ## 使用方式
@@ -102,9 +106,7 @@ MIT
 
 # TurboHarmony
 
-> Simple integration tool for Alpine.js and Hotwire Turbo
-
-A small utility to help Alpine.js and Turbo work better together.
+Simple integration tool for Alpine.js and Hotwire Turbo
 
 ## Problems We Encountered
 
@@ -125,10 +127,16 @@ TurboHarmony provides a simple solution:
 
 ## Installation
 
-### NPM/Yarn
+### NPM
 
 ```bash
-npm install github:kaochenlong/turbo-harmony
+npm install turbo-harmony
+```
+
+### Yarn
+
+```bash
+yarn add turbo-harmony
 ```
 
 ## Usage

@@ -64,31 +64,36 @@
   </div>
 
   <script>
-    // Initialize TurboHarmony with debug mode
-    const harmony = new TurboHarmony({
-      debug: true,
-      preserveState: true,
-      beforeReinit: (element) => {
-        console.log('Before reinit:', element)
-      },
-      afterReinit: (element) => {
-        console.log('After reinit:', element)
-      }
+    // Wait for all dependencies to load
+    window.addEventListener('load', () => {
+      // Initialize TurboHarmony with debug mode
+      const harmony = new TurboHarmony({
+        debug: true,
+        preserveState: true,
+        beforeReinit: (element) => {
+          console.log('Before reinit:', element)
+        },
+        afterReinit: (element) => {
+          console.log('After reinit:', element)
+        }
+      })
+
+      console.log('TurboHarmony initialized successfully')
     })
 
     // Alpine component
     document.addEventListener('alpine:init', () => {
       Alpine.data('counter', () => ({
         count: 0,
-        
+
         increment() {
           this.count++
         },
-        
+
         simulateStreamUpdate() {
           // Simulate a Turbo Stream update
           const messagesContainer = document.getElementById('messages')
-          
+
           // Create a new message element
           const newMessage = document.createElement('div')
           newMessage.className = 'message'
@@ -97,15 +102,15 @@
             <span x-text="'Stream update at: ' + time"></span>
             <button @click="$el.remove()">Remove</button>
           `
-          
+
           // Append the new element
           messagesContainer.appendChild(newMessage)
-          
+
           // Trigger Turbo Stream event
           const event = new CustomEvent('turbo:stream-render', {
-            detail: { 
+            detail: {
               action: 'append',
-              target: messagesContainer 
+              target: messagesContainer
             }
           })
           document.dispatchEvent(event)
