@@ -86,9 +86,7 @@ class TurboHarmony {
   }
 
   shouldSkipElement(element) {
-    return this.options.skipSelectors.some(selector => 
-      element.matches?.(selector)
-    )
+    return this.options.skipSelectors.some(selector => element.matches?.(selector))
   }
 
   reinitializeAlpineInElement(element) {
@@ -153,3 +151,4 @@ export { TurboHarmony }
 if (typeof window !== 'undefined') {
   window.TurboHarmony = TurboHarmony
 }
+

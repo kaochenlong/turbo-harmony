@@ -164,9 +164,12 @@ export class TurboHarmonyDebugger {
    * Make the panel draggable
    */
   makeDraggable(element) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0
+    let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0
     const header = element.querySelector('h3')
-    
+
     header.style.cursor = 'move'
     header.onmousedown = dragMouseDown
 
@@ -186,8 +189,8 @@ export class TurboHarmonyDebugger {
       pos2 = pos4 - e.clientY
       pos3 = e.clientX
       pos4 = e.clientY
-      element.style.top = (element.offsetTop - pos2) + "px"
-      element.style.left = (element.offsetLeft - pos1) + "px"
+      element.style.top = element.offsetTop - pos2 + 'px'
+      element.style.left = element.offsetLeft - pos1 + 'px'
       element.style.right = 'auto'
     }
 
@@ -263,11 +266,14 @@ export class TurboHarmonyDebugger {
 
     // Copy to clipboard
     const reportText = JSON.stringify(report, null, 2)
-    navigator.clipboard.writeText(reportText).then(() => {
-      alert('Metrics exported to console and copied to clipboard!')
-    }).catch(err => {
-      console.error('Failed to copy to clipboard:', err)
-    })
+    navigator.clipboard
+      .writeText(reportText)
+      .then(() => {
+        alert('Metrics exported to console and copied to clipboard!')
+      })
+      .catch(err => {
+        console.error('Failed to copy to clipboard:', err)
+      })
   }
 
   /**
@@ -276,7 +282,7 @@ export class TurboHarmonyDebugger {
   toggleLogging() {
     const logOutput = this.panel.querySelector('#debug-log-output')
     const isVisible = logOutput.style.display !== 'none'
-    
+
     if (isVisible) {
       logOutput.style.display = 'none'
       this.turboHarmony.options.debug = false
@@ -326,10 +332,10 @@ export class TurboHarmonyDebugger {
     const logOutput = this.panel.querySelector('#debug-log-output')
     const entry = document.createElement('div')
     entry.className = `log-entry log-${level}`
-    entry.textContent = args.map(arg => 
-      typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
-    ).join(' ')
-    
+    entry.textContent = args
+      .map(arg => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
+      .join(' ')
+
     logOutput.appendChild(entry)
     logOutput.scrollTop = logOutput.scrollHeight
   }
@@ -338,7 +344,7 @@ export class TurboHarmonyDebugger {
    * Setup keyboard shortcuts
    */
   setupKeyboardShortcuts() {
-    this.keyboardHandler = (e) => {
+    this.keyboardHandler = e => {
       // Ctrl+Shift+H to toggle debug panel
       if (e.ctrlKey && e.shiftKey && e.key === 'H') {
         e.preventDefault()
@@ -365,9 +371,10 @@ export class TurboHarmonyDebugger {
 
 // Auto-activate debugger in development mode
 if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-  window.addEventListener('turbo-harmony:init', (event) => {
+  window.addEventListener('turbo-harmony:init', event => {
     const turboHarmony = event.detail.instance
-    const debugger = new TurboHarmonyDebugger(turboHarmony)
-    debugger.activate()
+    const debuggerInstance = new TurboHarmonyDebugger(turboHarmony)
+    debuggerInstance.activate()
   })
 }
+

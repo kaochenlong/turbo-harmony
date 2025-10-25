@@ -1,6 +1,6 @@
 {
   "name": "turbo-harmony",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Seamless integration between Alpine.js and Hotwire Turbo",
   "keywords": [
     "alpinejs",
@@ -13,7 +13,7 @@
     "integration",
     "adapter"
   ],
-  "author": "Eddie Kao",
+  "author": "Kao Chien Lung",
   "license": "MIT",
   "homepage": "https://github.com/kaochenlong/turbo-harmony#readme",
   "bugs": {
@@ -36,7 +36,7 @@
     "./src": "./src/index.js",
     "./src/index.js": "./src/index.js",
     "./dist/turbo-harmony.js": "./dist/turbo-harmony.js",
-    "./dist/turbo-harmony.standard.js": "./dist/turbo-harmony.standard.js", 
+    "./dist/turbo-harmony.standard.js": "./dist/turbo-harmony.standard.js",
     "./dist/turbo-harmony.lite.js": "./dist/turbo-harmony.lite.js",
     "./standard": "./dist/turbo-harmony.standard.js",
     "./lite": "./dist/turbo-harmony.lite.js"
@@ -79,3 +79,4 @@
     "node": ">=14.0.0"
   }
 }
+

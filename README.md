@@ -26,14 +26,6 @@ TurboHarmony 提供簡單的解決方案：
 ### NPM/Yarn
 
 ```bash
-npm install turbo-harmony
-# 或
-yarn add turbo-harmony
-```
-
-### GitHub（推薦用於測試）
-
-```bash
 npm install github:kaochenlong/turbo-harmony
 ```
 
@@ -71,10 +63,10 @@ import TurboHarmony from 'turbo-harmony/lite'
 const harmony = new TurboHarmony({
   // 開發時啟用除錯
   debug: true,
-  
+
   // 是否保存狀態
   preserveState: false,
-  
+
   // 要跳過的元素
   skipSelectors: ['.no-alpine', '.turbo-harmony-skip']
 })
@@ -82,22 +74,20 @@ const harmony = new TurboHarmony({
 
 ## 設定選項
 
-| 選項 | 型別 | 預設值 | 說明 |
-|------|------|--------|------|
-| `debug` | boolean | `false` | 啟用除錯模式 |
-| `preserveState` | boolean | `false` | 保存組件狀態 |
-| `skipSelectors` | array | `['.turbo-harmony-skip']` | 跳過的選擇器 |
-| `beforeReinit` | function | `null` | 重新初始化前的回調 |
-| `afterReinit` | function | `null` | 重新初始化後的回調 |
-| `onError` | function | `null` | 錯誤處理回調 |
+| 選項            | 型別     | 預設值                    | 說明               |
+| --------------- | -------- | ------------------------- | ------------------ |
+| `debug`         | boolean  | `false`                   | 啟用除錯模式       |
+| `preserveState` | boolean  | `false`                   | 保存組件狀態       |
+| `skipSelectors` | array    | `['.turbo-harmony-skip']` | 跳過的選擇器       |
+| `beforeReinit`  | function | `null`                    | 重新初始化前的回調 |
+| `afterReinit`   | function | `null`                    | 重新初始化後的回調 |
+| `onError`       | function | `null`                    | 錯誤處理回調       |
 
 ## 跳過特定元素
 
 ```html
 <!-- 這個組件不會被重新初始化 -->
-<div x-data="myComponent()" class="turbo-harmony-skip">
-  ...
-</div>
+<div x-data="myComponent()" class="turbo-harmony-skip">...</div>
 ```
 
 ## 目前狀態
@@ -138,14 +128,6 @@ TurboHarmony provides a simple solution:
 ### NPM/Yarn
 
 ```bash
-npm install turbo-harmony
-# or
-yarn add turbo-harmony
-```
-
-### GitHub (Recommended for testing)
-
-```bash
 npm install github:kaochenlong/turbo-harmony
 ```
 
@@ -183,10 +165,10 @@ import TurboHarmony from 'turbo-harmony/lite'
 const harmony = new TurboHarmony({
   // Enable debug in development
   debug: true,
-  
+
   // Whether to preserve state
   preserveState: false,
-  
+
   // Elements to skip
   skipSelectors: ['.no-alpine', '.turbo-harmony-skip']
 })
@@ -194,22 +176,20 @@ const harmony = new TurboHarmony({
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `debug` | boolean | `false` | Enable debug mode |
-| `preserveState` | boolean | `false` | Preserve component state |
-| `skipSelectors` | array | `['.turbo-harmony-skip']` | Skip selectors |
-| `beforeReinit` | function | `null` | Before reinit callback |
-| `afterReinit` | function | `null` | After reinit callback |
-| `onError` | function | `null` | Error handler callback |
+| Option          | Type     | Default                   | Description              |
+| --------------- | -------- | ------------------------- | ------------------------ |
+| `debug`         | boolean  | `false`                   | Enable debug mode        |
+| `preserveState` | boolean  | `false`                   | Preserve component state |
+| `skipSelectors` | array    | `['.turbo-harmony-skip']` | Skip selectors           |
+| `beforeReinit`  | function | `null`                    | Before reinit callback   |
+| `afterReinit`   | function | `null`                    | After reinit callback    |
+| `onError`       | function | `null`                    | Error handler callback   |
 
 ## Skip Specific Elements
 
 ```html
 <!-- This component won't be reinitialized -->
-<div x-data="myComponent()" class="turbo-harmony-skip">
-  ...
-</div>
+<div x-data="myComponent()" class="turbo-harmony-skip">...</div>
 ```
 
 ## Current Status
@@ -219,3 +199,4 @@ This is an experimental tool primarily built to solve problems in our own projec
 ## License
 
 MIT
+
