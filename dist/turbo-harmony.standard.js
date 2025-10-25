@@ -340,7 +340,63 @@ class TurboHarmony {
           reinit();
         }
       } else {
-        this.log('debug', 'No elements need reinitialization');
+        // No x-data elements found inside, check if parent has x-data
+        // This handles the common pattern where a parent element has x-data
+        // and child Turbo Frames contain only Alpine directives (x-on:*, x-model, etc.)
+        const parentWithData = element.closest('[x-data]');
+
+        if (parentWithData) {
+          // Found parent with x-data, reinitialize from parent to ensure
+          // child directives can access the Alpine component context
+          this.log('debug', 'Found parent with x-data, reinitializing from parent');
+
+          const reinit = () => {
+            if (Alpine.destroyTree) {
+              Alpine.destroyTree(parentWithData);
+            }
+
+            if (Alpine.initTree) {
+              Alpine.initTree(parentWithData);
+            }
+
+            // Execute afterReinit hook
+            if (this.options.afterReinit) {
+              this.options.afterReinit(element);
+            }
+
+            this.log('debug', 'Alpine reinitialization from parent complete');
+          };
+
+          // Apply delay if configured
+          if (this.options.reinitDelay > 0) {
+            setTimeout(reinit, this.options.reinitDelay);
+          } else {
+            reinit();
+          }
+        } else {
+          // No parent with x-data, just try to initialize the element itself
+          this.log('debug', 'No x-data found in parent chain, initializing element directly');
+
+          const reinit = () => {
+            if (Alpine.initTree) {
+              Alpine.initTree(element);
+            }
+
+            // Execute afterReinit hook
+            if (this.options.afterReinit) {
+              this.options.afterReinit(element);
+            }
+
+            this.log('debug', 'Alpine directive initialization complete');
+          };
+
+          // Apply delay if configured
+          if (this.options.reinitDelay > 0) {
+            setTimeout(reinit, this.options.reinitDelay);
+          } else {
+            reinit();
+          }
+        }
       }
 
     } catch (error) {
